@@ -14,7 +14,7 @@ function At = chebsdp_2d(d)
 %
 % p_ij(x,y) = T_i(x)*T_j(y)
 
-% Set up stuff
+% Set up 
 dk = nchoosek(d+2,2);           % matrix size
 A = monpowers(2,d);             % bivariate exponents up to degree d
 P = monpowers(2,2*d);           % bivariate exponents up to degree 2d
