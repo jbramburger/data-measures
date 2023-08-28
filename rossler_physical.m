@@ -1,7 +1,7 @@
 % -------------------------------------------------------------------------
 % Discovering Physical Measures of the Rossler System from Data
 %
-% This script is used to replicate the results of Section 5.3.1 of 
+% This script is used to replicate the results of Section 6.3.1 of 
 % Data-driven Discovery of Invariant Measures by Jason J. Bramburger 
 % and Giovanni Fantuzzi. 
 %

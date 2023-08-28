@@ -1,7 +1,7 @@
 % -------------------------------------------------------------------------
 % Discovering UPOs of the Rossler Poincare Map
 %
-% This script is used to replicate the results of Section 5.3.2 of 
+% This script is used to replicate the results of Section 6.3.2 of 
 % Data-driven Discovery of Invariant Measures by Jason J. Bramburger 
 % and Giovanni Fantuzzi. 
 %
