@@ -36,7 +36,7 @@ addpath(genpath('Auxiliary Scripts'))
 % ell = maximal degree of monomials in Q matrix (and number of moments)
 % N = number of data points used to learn Lie derivative
 % TOL = thresholding tolerance for the EDMD matrix
-k = 10;
+k = 20;
 ell = 2*k;
 N = 1e3;
 TOL = 0;
@@ -80,6 +80,7 @@ M1 = reshape(B*[1;y],[k,k]);
 
 % Approximate first moment from data
 yObj = sum(x)/N;
+%yObj = 0; % <--- exact moment value
 
 % Solve
 OBJ = ( y(1) - yObj ).^2;
@@ -105,6 +106,7 @@ plot(rho,'Color',[36/255 122/255 254/255],'LineWidth',4)
 axis([-1 1 0 4])
 xlabel('$x$','interpreter','latex')
 legend('Exact','Discovered','Location','Best','interpreter','latex','FontSize',20)
+%legend('Exact','SDP','Location','Best','interpreter','latex','FontSize',20)
 set(gca,'FontSize',16)
 
 %% L1 norm of cumulative distributions 
@@ -113,5 +115,53 @@ set(gca,'FontSize',16)
 rhoStarX = chebfun(@(x) asin(x)/pi + 0.5,'splitting','on');
 rhoX = cumsum(rho);
 L1error = sum(abs(rhoStarX - rhoX))
+
+%% Generate histogram density from data
+
+nBins = 101;
+edges = linspace(-1,1,nBins);
+plot(xx, 1./pi./sqrt(1-xx.^2),'--','Color',[1 69/255 79/255],'LineWidth',3)
+hold on
+hist = histogram(x,edges,'Normalization','pdf','FaceColor',[36/255 122/255 254/255]);
+axis([-1 1 0 4])
+xlabel('$x$','interpreter','latex')
+legend('Exact','Histogram','Location','Best','interpreter','latex','FontSize',20)
+set(gca,'FontSize',16)
+
+%% Compare moments y_j to histogram moments
+
+% Initializations
+num_moms = 10;
+ymoms = zeros(num_moms,1);
+histmoms = zeros(num_moms,1);
+yerror = zeros(num_moms,1);
+histerror = zeros(num_moms,1);
+
+z = chebfun(@(z) z);
+dx = edges(2) - edges(1);
+binMids = edges(1:end-1) + dx/2;
+
+% Computed externall with symbolic integration
+truemoms = [0; 0.5; 0; 0.375; 0; 0.3125; 0; 0.273438; 0; 0.246094; 0; 0.225586; 0; 0.209473; 0; 0.196381; 0; 0.185471; 0; 0.176197];
+
+for j = 1:num_moms
+
+    % Chebyshev expansion of monomial term
+    c = chebcoeffs(z^(2*j));
+    ymoms(j) = dot(c,[1;value(y(1:2*j))]);
+    yerror(j) = abs(ymoms(j) - truemoms(2*j))/abs(truemoms(2*j))*100;
+    
+    % Integrate against histogram pdf
+    histmoms(j) = sum((binMids.^(2*j)).*hist.Values)*dx;
+    histerror(j) = abs(histmoms(j) - truemoms(2*j))/abs(truemoms(2*j))*100;
+    
+end
+
+% Print relative errors
+errors = [yerror, histerror]
+
+
+
+
 
 
