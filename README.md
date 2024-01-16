@@ -14,7 +14,7 @@ In some scripts we further use the ChebFun package, which can be downloaded at: 
 
 ## **Repository Contents**
 This repository contains MATLAB script to reproduce the results for the examples in Section 6 of the paper. Precisely, the scripts perform the following tasks:
-- `logistic_physical.m` discovers the physical measure of the logistic map from data. This script accompanies Section 6.1.3.
+- `logistic_physical.m` discovers the physical measure of the logistic map from data and compares results with a histogram representation of the measure. This script accompanies Section 6.1.3.
 - `logistic_ergodic.m` discovers ergodic measures of the logistic map that are approximately supported on sets of unstable periodic orbits. This script accompanies Section 6.1.2.
 - `double_well.m` approximates the unique invariant measure from data of a stochastic double-well system. This script accompanies Section 6.2.
 - `rossler_physical.m` discovers the physical measure of the Rossler system in a chaotic parameter regime from data. The MATLAB data `Rossler_LongQuadAvgs.mat` contains approximations of the quadratic moments from long-time averages of the system that can be compared with predictions from the discovered measure. This script accompanies Section 6.3.1.
