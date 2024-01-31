@@ -35,17 +35,18 @@ k = 6; % degree of invariance constraints
 ell = k + 2; % degree of EDMD dictionary (must be even)
 ic = 500;  % number of initial conditions
 ts = 1e4; % number of timesteps for each simulation
-h = 1e-3; % timestep
+h = 1e-4; % timestep
 
 %% Generate Synthetic Data
 % Uses Euler-Maruyama method for simulating SDEs
 % Potential is V(x,y) = (x^2 - 1) + y^2
 
 % Noise amplitude
-sigma = 0.7;
+sigma = 0.75;
 
 % Double-well system
-f = @(x) [-2*(x(1)^2-1).*x(1); -2*x(2)];
+f = @(x) [-16*( x(1) + x(2) )^3 + 2*x(1) + 6*x(2); ...
+          -16*( x(1) + x(2) )^3 + 6*x(1) + 2*x(2)];
 
 % Initializations
 m = ic*ts;
@@ -53,16 +54,22 @@ x = zeros(2,m);
 y = zeros(2,m);
 shift = 0;
 for run = 1:ic
-    x(:,shift+1) = [(-1)^mod(run,2); 0];
-    y(:,shift+1) = x(:,shift+1) + h*f(x(:,shift+1)) + sqrt(h)*sigma*randn(2,1);
+    X(:,shift+1) = rand(2,1)-0.5;
+    Y(:,shift+1) = X(:,shift+1) + h*f(X(:,shift+1)) + sqrt(h)*sigma*randn(2,1);
     for i = 1:ts-1
-        x(:,shift+i+1) = y(:,shift+i);
-        y(:,shift+i+1) = x(:,shift+i+1) + h*f(x(:,shift+i+1)) + sqrt(h)*sigma*randn(2,1);
+        X(:,shift+i+1) = Y(:,shift+i);
+        Y(:,shift+i+1) = X(:,shift+i+1) + h*f(X(:,shift+i+1)) + sqrt(h)*sigma*randn(2,1);
     end
     shift = shift + ts;
 end
-x = x(:,1:m).'./2;
-y = y.'./2;
+
+% Ensure the data are in [-1,1]^2
+X = X(:,1:m);
+Y = Y(:,1:m);
+keep = vecnorm(X, Inf, 1) <= 1;
+keep = keep & ( vecnorm(Y, Inf, 1) <= 1 );
+X = X(:,keep).';
+Y = Y(:,keep).';
 
 % Save data for reproducability
 %save('two_well_2.mat','x','y','h');
